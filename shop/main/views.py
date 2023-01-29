@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -18,8 +19,13 @@ from .services import create_user_by_signup, user_signin_after_signup, signin_au
 class Index(View):
 
     def get(self, request):
-        products = Products.objects.all()
-        return render(request, 'main/index.html', {'products':products})
+        products = Products.objects.all().order_by('-updated_at')
+
+        paginated_products = Paginator(products, 3)
+        page_number = request.GET.get('page')
+        current_page_products = paginated_products.get_page(page_number)
+
+        return render(request, 'main/index.html', {'products':current_page_products})
 
 class ProductDetail(LoginRequiredMixin, View):
     login_url = 'signin'
