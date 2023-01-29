@@ -1,0 +1,34 @@
+{% extends 'main/base.html' %}
+{% block title %} Авторизация {% endblock %}
+
+{% block content %}
+
+<div class="sign-page">
+    <form action="" method="POST">
+        {% csrf_token %}
+
+        <h3>Авторизация</h3>
+        <div class="sign-form">
+
+            {% if errors %}s
+                {{ errors }}
+            {% endif %}
+
+            {% for f in form %}
+                <div class="sign-form-items">
+                    <div class="sign-form-label"><label for="{{f.id_for_label}}">{{f.label}}: </label> </div>
+                    <div class="sign-form-currentform"> {{ f }} </div>
+                    <div class="sign-form-errors">{{ f.errors }}</div>
+                </div>
+            {% endfor %}
+        </div>
+
+
+        <div class="sign-form-button">
+            <button type="submit" class="">Авторизоваться</button>
+            <p class="text-base"> Вы еще не зарегестрированы?<a href="{% url 'signin' %}"> Регистрация </a></p>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

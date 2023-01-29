@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+{% block title %}j Shop - Technical shop{% endblock %}
+
+{% block content %}
+
+
+<div class="product-detail-data">
+    <div class="product-name">
+        {{ current_product.name}}
+    </div>
+    <div class="product-detail-grid">
+        <div><img class="img-size-control" src="{{ current_product.image.url }}" alt="..." /></div>
+        <div class="product-dt-description">{{ current_product.description }}</div>
+        <div class="product-dt-price">
+            {{ current_product.price }}
+            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+        </div>
+    </div>
+</div>
+
+
+<!--    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">-->
+<!--        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>-->
+<!--    </div>-->
+
+{% endblock %}
