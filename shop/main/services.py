@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, auth
 from django.shortcuts import redirect
+from .models import Categories
 
 
 def check_username_exists(username):
@@ -31,3 +32,6 @@ def is_user_signin(username):
             return True
         else:
             return False
+
+def get_categories_query():
+    return Categories.objects.all()

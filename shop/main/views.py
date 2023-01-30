@@ -89,3 +89,16 @@ class Logout(View):
     def get(self, request):
         auth.logout(request)
         return redirect('signin')
+
+
+class Category(View):
+
+    def get(self, request, slug):
+        category = Categories.objects.filter(slug=slug).first()
+        products = Products.objects.filter(category=category).order_by('-updated_at')
+
+        paginated_products = Paginator(products, 3)
+        page_number = request.GET.get('page')
+        current_page_products = paginated_products.get_page(page_number)
+
+        return render(request, 'main/category.html', {'products':current_page_products, 'category':category})
