@@ -1,5 +1,5 @@
 {% extends 'main/base.html' %}
-{% block title %}j Shop - Интернет-магазин техники{% endblock %}
+{% block title %}j-Shop - Интернет-магазин техники{% endblock %}
 
 {% block content %}
     <section class="py-5">
@@ -10,7 +10,12 @@
                 <div class="col mb-5">
                     <div class="card h-100">
                         <!-- Product image-->
-                        <img class="card-img-top img-size-control" src="{{ product.image.url }}" alt="..." />
+                        {% if product.stock == 0 %}
+                            <img class="card-img-top img-size-control img-for-no-product" src="{{ product.image.url }}" alt="..." />
+                        {% else %}
+                            <img class="card-img-top img-size-control" src="{{ product.image.url }}" alt="..." />
+                        {% endif %}
+
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -22,7 +27,11 @@
                         </div>
                         <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Добавить в корзину</a></div>
+                            {% if product.stock == 0 %}
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto deactivate-url" href="#">Товар закончился</a></div>
+                            {% else %}
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Добавить в корзину</a></div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class Categories(models.Model):
@@ -37,3 +38,9 @@ class Products(models.Model):
 
     def get_absolute_url(self):
         return reverse('product-detail', kwargs={'slug': self.slug})
+
+
+class Basket(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='basket')
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='basket')
+    count = models.PositiveIntegerField()

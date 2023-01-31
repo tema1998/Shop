@@ -9,11 +9,24 @@
         {{ current_product.name}}
     </div>
     <div class="product-detail-grid">
-        <div><img class="img-size-control" src="{{ current_product.image.url }}" alt="..." /></div>
+        <div>
+            {% if current_product.stock == 0 %}
+                <img class="card-img-top img-size-control img-for-no-product" src="{{ current_product.image.url }}" alt="..." />
+            {% else %}
+                <img class="card-img-top img-size-control" src="{{ current_product.image.url }}" alt="..." />
+            {% endif %}
+
+
+        </div>
         <div class="product-dt-description">{{ current_product.description }}</div>
         <div class="product-dt-price">
             {{ current_product.price }}
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+
+            {% if current_product.stock == 0 %}
+                <div class="text-center"><a class="btn btn-outline-dark mt-auto deactivate-url" href="#">Товар закончился</a></div>
+            {% else %}
+                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Добавить в корзину</a></div>
+            {% endif %}
         </div>
     </div>
 </div>

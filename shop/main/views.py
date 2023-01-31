@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.db.models import F
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -95,7 +96,7 @@ class Category(View):
 
     def get(self, request, slug):
         category = Categories.objects.filter(slug=slug).first()
-        products = Products.objects.filter(category=category).order_by('-updated_at')
+        products = Products.objects.filter(category=category).order_by('stock' ,'-updated_at')
 
         paginated_products = Paginator(products, 3)
         page_number = request.GET.get('page')

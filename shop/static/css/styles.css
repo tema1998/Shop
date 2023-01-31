@@ -11386,3 +11386,8 @@ textarea.form-control-lg {
   .deactivate-url {
   pointer-events: none;
   }
+
+  .img-for-no-product {
+  filter: alpha(opacity=40);
+  opacity: 0.4;
+  }
