@@ -1,5 +1,5 @@
 from django import template
-from ..services import is_user_signin, get_categories_query
+from ..services import is_user_signin, get_categories_query, get_user_products_in_basket
 
 register = template.Library()
 
@@ -10,3 +10,7 @@ def check_is_us_signin(username):
 @register.simple_tag()
 def get_categories_list():
     return get_categories_query()
+
+@register.simple_tag()
+def get_user_products_in_basket_templatetag(user_id):
+    return get_user_products_in_basket(user_id)

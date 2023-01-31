@@ -12,7 +12,7 @@ from django.http import Http404
 
 
 from .forms import SignUpForm, SignInForm
-from .models import Categories, Products
+from .models import Categories, Products, Basket
 from .services import create_user_by_signup, user_signin_after_signup, signin_authenticate, signin_login_finish, is_user_signin
 
 
@@ -27,6 +27,24 @@ class Index(View):
         current_page_products = paginated_products.get_page(page_number)
 
         return render(request, 'main/index.html', {'products':current_page_products})
+
+    def post(self, request):
+        user = request.user
+        chosen_product_id = request.POST['product_id']
+        amount = 1
+
+        current_product = Products.objects.get(id=chosen_product_id)
+
+        if Basket.objects.filter(user=user, product=current_product).exists():
+            current_product_in_basket = Basket.objects.get(user=user, product=current_product)
+            current_product_in_basket.amount+=1
+            current_product_in_basket.save()
+            return redirect('index')
+        else:
+            add_purchase_to_basket = Basket.objects.create(user=user, product=current_product, amount=amount)
+            add_purchase_to_basket.save()
+            return redirect('index')
+
 
 class ProductDetail(LoginRequiredMixin, View):
     login_url = 'signin'
@@ -103,3 +121,33 @@ class Category(View):
         current_page_products = paginated_products.get_page(page_number)
 
         return render(request, 'main/category.html', {'products':current_page_products, 'category':category})
+
+
+class BasketProducts(View):
+
+    def get(self, request):
+        user = request.user
+        products_in_basket = Basket.objects.filter(user=user).order_by('-last_added_at')
+
+        paginated_products = Paginator(products_in_basket, 3)
+        page_number = request.GET.get('page')
+        current_page_products = paginated_products.get_page(page_number)
+
+        return render(request, 'main/basket.html', {'basket_model_products':current_page_products})
+
+    # def post(self, request):
+    #     user = request.user
+    #     chosen_product_id = request.POST['product_id']
+    #     amount = 1
+    #
+    #     current_product = Products.objects.get(id=chosen_product_id)
+    #
+    #     if Basket.objects.filter(user=user, product=current_product).exists():
+    #         current_product_in_basket = Basket.objects.get(user=user, product=current_product)
+    #         current_product_in_basket.amount+=1
+    #         current_product_in_basket.save()
+    #         return redirect('index')
+    #     else:
+    #         add_purchase_to_basket = Basket.objects.create(user=user, product=current_product, amount=amount)
+    #         add_purchase_to_basket.save()
+    #         return redirect('index')

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, auth
 from django.shortcuts import redirect
-from .models import Categories
+from .models import Categories, Basket
 
 
 def check_username_exists(username):
@@ -35,3 +35,15 @@ def is_user_signin(username):
 
 def get_categories_query():
     return Categories.objects.all()
+
+def get_user_products_in_basket(user_id):
+    user = User.objects.get(id=user_id)
+
+    products_in_basket = Basket.objects.filter(user = user)
+
+    #find amount of all products in basket
+    counter_each_products_in_basket = 0
+    for product in products_in_basket:
+        counter_each_products_in_basket += product.amount
+
+    return counter_each_products_in_basket

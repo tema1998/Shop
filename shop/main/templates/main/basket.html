@@ -1,46 +1,41 @@
 {% extends 'main/base.html' %}
-{% block title %}j-Shop - Интернет-магазин техники{% endblock %}
+{% block title %} Корзина покупок j-Shop - Интернет-магазин техники {% endblock %}
 
 {% block content %}
     <section class="py-5">
         <div class="container px-4 px-lg-5 mt-5">
             <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 
-                {% for product in products %}
+                {% for basket_model_product in basket_model_products %}
                 <div class="col mb-5">
                     <div class="card h-100">
                         <!-- Product image-->
-                        {% if product.stock == 0 %}
-                            <img class="card-img-top img-size-control img-for-no-product" src="{{ product.image.url }}" alt="..." />
-                        {% else %}
-                            <img class="card-img-top img-size-control" src="{{ product.image.url }}" alt="..." />
-                        {% endif %}
-
+                        <img class="card-img-top img-size-control" src="{{ basket_model_product.product.image.url }}" alt="..." />
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
                                 <!-- Product name-->
-                                <a href="{{ product.get_absolute_url }}"><h5 class="fw-bolder">{{ product.name}}</h5></a>
+                                <a href="{{ basket_model_product.product.get_absolute_url }}"><h5 class="fw-bolder">{{ basket_model_product.product.name}}</h5></a>
                                 <!-- Product price-->
-                                {{ product.price }}
+                                {{ basket_model_product.product.price }} <br>
+                                {{ basket_model_product.amount }} шт.
                             </div>
                         </div>
                         <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            {% if product.stock == 0 %}
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto deactivate-url" href="#">Товар закончился</a></div>
-                            {% else %}
-                                <form action="" method="POST" enctype="multipart/form-data">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="product_id" value="{{ product.id }}">
-                                    <div class="text-center">
-                                    <button type="submit" class="btn btn-outline-dark mt-auto"> Добавить в корзину </button>
-                                    </div>
-                                </form>
-                            {% endif %}
+
+                            <form action="" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <div class="text-center">
+                                <button type="submit" class="btn btn-outline-dark mt-auto"> Удалить 1шт </button>
+                                </div>
+                            </form>
+
                         </div>
                     </div>
                 </div>
+
                 {% endfor %}
 
 
