@@ -3447,6 +3447,15 @@ textarea.form-control-lg {
   color: #212529;
   border-color: #212529;
 }
+
+.btn-width {
+  width: 60px;
+}
+
+.button-plus-minus {
+  margin-bottom: 5px;
+}
+
 .btn-outline-dark:hover {
   color: #fff;
   background-color: #212529;

@@ -18,7 +18,7 @@
                                 <a href="{{ basket_model_product.product.get_absolute_url }}"><h5 class="fw-bolder">{{ basket_model_product.product.name}}</h5></a>
                                 <!-- Product price-->
                                 {{ basket_model_product.product.price }} <br>
-                                {{ basket_model_product.amount }} шт.
+                                <h5> Заказано: {{ basket_model_product.amount }} шт.</h5>
                             </div>
                         </div>
                         <!-- Product actions-->
@@ -26,10 +26,16 @@
 
                             <form action="" method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
-                                <input type="hidden" name="product_id" value="{{ product.id }}">
-                                <div class="text-center">
-                                <button type="submit" class="btn btn-outline-dark mt-auto"> Удалить 1шт </button>
-                                </div>
+                                <input type="hidden" name="product_id" value="{{ basket_model_product.product.id }}">
+
+                                    <div class="button-plus-minus text-center">
+                                        <button type="submit" name="decrease_amount" class="btn btn-outline-dark mt-auto btn-width"> -1 </button>
+                                        <button type="submit" name="increase_amount" class="btn btn-outline-dark mt-auto btn-width"> +1 </button>
+                                    </div>
+
+                                    <div class="button-delete text-center">
+                                        <button type="submit" name="delete_product" class="btn btn-outline-dark mt-auto"> delete </button>
+                                    </div>
                             </form>
 
                         </div>
@@ -38,42 +44,39 @@
 
                 {% endfor %}
 
-
-
             </div>
 
-        <div class="pagination-block">
-            <div class="pagination">
+            <div class="pagination-block">
+                <div class="pagination">
 
-                {% if products.has_previous %}
-                    <a href="?page={{ products.number|add:-1 }}">«</a>
-                {% endif %}
-
-                {% if products.number|add:-2 > 1 %}
-                    <a href="?page=1"> 1 </a>
-                    <a class="deactivate-url" href=""> ... </a>
-                {% endif %}
-
-                {% for page in products.paginator.page_range %}
-                    {% if page == products.number %}
-                        <a class="active" href="?page={{ page }}"> {{ page }} </a>
-                    {% elif page >= products.number|add:-2 and page <= products.number|add:2 %}
-                        <a href="?page={{ page }}"> {{ page }} </a>
+                    {% if basket_model_products.has_previous %}
+                        <a href="?page={{ products.number|add:-1 }}">«</a>
                     {% endif %}
-                {% endfor %}
 
-                {% if products.number|add:2 < products.paginator.num_pages %}
-                    <a class="deactivate-url" href=""> ... </a>
-                    <a href="?page={{ products.paginator.num_pages }}"> {{ products.paginator.num_pages }} </a>
-                {% endif %}
+                    {% if basket_model_products.number|add:-2 > 1 %}
+                        <a href="?page=1"> 1 </a>
+                        <a class="deactivate-url" href=""> ... </a>
+                    {% endif %}
 
-                {% if products.has_next %}
-                <a href="?page={{ products.number|add:1 }}">»</a>
-                {% endif %}
+                    {% for page in basket_model_products.paginator.page_range %}
+                        {% if page == products.number %}
+                            <a class="active" href="?page={{ page }}"> {{ page }} </a>
+                        {% elif page >= basket_model_products.number|add:-2 and page <= basket_model_products.number|add:2 %}
+                            <a href="?page={{ page }}"> {{ page }} </a>
+                        {% endif %}
+                    {% endfor %}
 
+                    {% if basket_model_products.number|add:2 < basket_model_products.paginator.num_pages %}
+                        <a class="deactivate-url" href=""> ... </a>
+                        <a href="?page={{ products.paginator.num_pages }}"> {{ basket_model_products.paginator.num_pages }} </a>
+                    {% endif %}
+
+                    {% if basket_model_products.has_next %}
+                    <a href="?page={{ products.number|add:1 }}">»</a>
+                    {% endif %}
+
+                </div>
             </div>
-        </div>
-
 
         </div>
 

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, auth
 from django.shortcuts import redirect
-from .models import Categories, Basket
+from .models import Products, Categories, Basket
 
 
 def check_username_exists(username):
@@ -47,3 +47,24 @@ def get_user_products_in_basket(user_id):
         counter_each_products_in_basket += product.amount
 
     return counter_each_products_in_basket
+
+def get_product_by_prod_id(id):
+    return Products.objects.get(id=id)
+
+def check_is_product_in_basket(user, product):
+    return Basket.objects.filter(user=user, product=product).exists()
+
+def add_new_product_to_basket(user, product, amount):
+    new_product_in_basket = Basket.objects.create(user=user, product=product, amount=amount)
+    new_product_in_basket.save()
+
+def add_amount_of_product_to_basket(user, product, amount=1):
+    exists_proudct_in_basket = Basket.objects.get(user=user, product=product)
+    exists_proudct_in_basket.amount += amount
+    exists_proudct_in_basket.save()
+    if exists_proudct_in_basket.amount == 0:
+        exists_proudct_in_basket.delete()
+
+def delete_product_from_basket(user, product):
+    exists_proudct_in_basket = Basket.objects.get(user=user, product=product)
+    exists_proudct_in_basket.delete()

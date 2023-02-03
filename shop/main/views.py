@@ -13,7 +13,9 @@ from django.http import Http404
 
 from .forms import SignUpForm, SignInForm
 from .models import Categories, Products, Basket
-from .services import create_user_by_signup, user_signin_after_signup, signin_authenticate, signin_login_finish, is_user_signin
+from .services import create_user_by_signup, user_signin_after_signup, signin_authenticate, signin_login_finish, \
+    is_user_signin, add_new_product_to_basket,add_amount_of_product_to_basket, check_is_product_in_basket, \
+    get_product_by_prod_id, delete_product_from_basket
 
 
 
@@ -33,16 +35,13 @@ class Index(View):
         chosen_product_id = request.POST['product_id']
         amount = 1
 
-        current_product = Products.objects.get(id=chosen_product_id)
+        product = get_product_by_prod_id(id=chosen_product_id)
 
-        if Basket.objects.filter(user=user, product=current_product).exists():
-            current_product_in_basket = Basket.objects.get(user=user, product=current_product)
-            current_product_in_basket.amount+=1
-            current_product_in_basket.save()
+        if check_is_product_in_basket(user=user, product=product):
+            add_amount_of_product_to_basket(user=user, product=product)
             return redirect('index')
         else:
-            add_purchase_to_basket = Basket.objects.create(user=user, product=current_product, amount=amount)
-            add_purchase_to_basket.save()
+            add_new_product_to_basket(user=user, product=product, amount=amount)
             return redirect('index')
 
 
@@ -135,19 +134,21 @@ class BasketProducts(View):
 
         return render(request, 'main/basket.html', {'basket_model_products':current_page_products})
 
-    # def post(self, request):
-    #     user = request.user
-    #     chosen_product_id = request.POST['product_id']
-    #     amount = 1
-    #
-    #     current_product = Products.objects.get(id=chosen_product_id)
-    #
-    #     if Basket.objects.filter(user=user, product=current_product).exists():
-    #         current_product_in_basket = Basket.objects.get(user=user, product=current_product)
-    #         current_product_in_basket.amount+=1
-    #         current_product_in_basket.save()
-    #         return redirect('index')
-    #     else:
-    #         add_purchase_to_basket = Basket.objects.create(user=user, product=current_product, amount=amount)
-    #         add_purchase_to_basket.save()
-    #         return redirect('index')
+    def post(self, request):
+        user = request.user
+        chosen_product_id = request.POST['product_id']
+        # amount = 1
+        #
+        current_product = Products.objects.get(id=chosen_product_id)
+
+        if 'increase_amount' in request.POST:
+            add_amount_of_product_to_basket(user, product=current_product, amount=1)
+            return redirect('basket')
+
+        if 'decrease_amount' in request.POST:
+            add_amount_of_product_to_basket(user, product=current_product, amount=-1)
+            return redirect('basket')
+
+        if 'delete_product' in request.POST:
+            delete_product_from_basket(user, product=current_product)
+            return redirect('basket')
