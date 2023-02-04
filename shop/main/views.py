@@ -9,6 +9,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.http import Http404
+from django.http import HttpResponseRedirect
 
 
 from .forms import SignUpForm, SignInForm
@@ -24,7 +25,7 @@ class Index(View):
     def get(self, request):
         products = Products.objects.all().order_by('-updated_at')
 
-        paginated_products = Paginator(products, 3)
+        paginated_products = Paginator(products, 4)
         page_number = request.GET.get('page')
         current_page_products = paginated_products.get_page(page_number)
 
@@ -39,10 +40,10 @@ class Index(View):
 
         if check_is_product_in_basket(user=user, product=product):
             add_amount_of_product_to_basket(user=user, product=product)
-            return redirect('index')
+            return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
         else:
             add_new_product_to_basket(user=user, product=product, amount=amount)
-            return redirect('index')
+            return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 class ProductDetail(LoginRequiredMixin, View):
@@ -128,7 +129,7 @@ class BasketProducts(View):
         user = request.user
         products_in_basket = Basket.objects.filter(user=user).order_by('-last_added_at')
 
-        paginated_products = Paginator(products_in_basket, 3)
+        paginated_products = Paginator(products_in_basket, 4)
         page_number = request.GET.get('page')
         current_page_products = paginated_products.get_page(page_number)
 
@@ -143,12 +144,12 @@ class BasketProducts(View):
 
         if 'increase_amount' in request.POST:
             add_amount_of_product_to_basket(user, product=current_product, amount=1)
-            return redirect('basket')
+            return redirect(request.META.get('HTTP_REFERER'))
 
         if 'decrease_amount' in request.POST:
             add_amount_of_product_to_basket(user, product=current_product, amount=-1)
-            return redirect('basket')
+            return redirect(request.META.get('HTTP_REFERER'))
 
         if 'delete_product' in request.POST:
             delete_product_from_basket(user, product=current_product)
-            return redirect('basket')
+            return redirect(request.META.get('HTTP_REFERER'))

@@ -17,17 +17,17 @@ class Categories(models.Model):
 
 
 class Products(models.Model):
-    name = models.CharField(max_length=100, db_index=True)
-    slug = models.SlugField(max_length=100, db_index=True, unique=True)
-    category = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name='products')
-    image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True)
-    description = models.CharField(max_length=500)
-    stock = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    available = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    discount = models.DecimalField(max_digits=10, decimal_places=2)
+    name = models.CharField(max_length=100, db_index=True, verbose_name='Товар')
+    slug = models.SlugField(max_length=100, db_index=True, unique=True, verbose_name='Слаг')
+    category = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name='products', verbose_name='Категория')
+    image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True, verbose_name='Изображение')
+    description = models.CharField(max_length=500, verbose_name='Описание')
+    stock = models.PositiveIntegerField(verbose_name='Кол-во')
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
+    available = models.BooleanField(default=True, verbose_name='В наличии')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
+    price_with_discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Со скидкой')
 
     class Meta:
         ordering = ('name',)
